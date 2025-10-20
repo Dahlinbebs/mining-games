@@ -27,7 +27,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava1, function (sp
 let guldType: Sprite = null
 let jernType: Sprite = null
 let diamantType: Sprite = null
-scene.setBackgroundColor(9)
+scene.setBackgroundColor(2)
 tiles.setCurrentTilemap(tilemap`level1`)
 let mySprite = sprites.create(img`
     . . . . . 

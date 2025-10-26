@@ -30,9 +30,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.guld, function (sprite, otherSpr
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava1, function (sprite, location) {
     game.gameOver(false)
 })
-info.onScore(50, function () {
-    game.gameOver(true)
-})
 let guldType: Sprite = null
 let jernType: Sprite = null
 let diamantType: Sprite = null

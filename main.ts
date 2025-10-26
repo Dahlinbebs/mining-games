@@ -3,11 +3,10 @@ namespace SpriteKind {
     export const Jern = SpriteKind.create()
     export const guld = SpriteKind.create()
 }
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
-    tiles.setTileAt(location, assets.tile`myTile1`)
-})
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function (sprite, location) {
-    tiles.setTileAt(location, assets.tile`myTile1`)
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (mySprite.vy == 0) {
+        mySprite.vy = -175
+    }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Jern, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
@@ -17,6 +16,13 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Diamant, function (sprite, other
     sprites.destroy(otherSprite)
     info.changeScoreBy(5)
 })
+info.onCountdownEnd(function () {
+    if (info.highScore() == 50) {
+        game.gameOver(true)
+    } else {
+        game.gameOver(false)
+    }
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.guld, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
     info.changeScoreBy(3)
@@ -24,78 +30,94 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.guld, function (sprite, otherSpr
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava1, function (sprite, location) {
     game.gameOver(false)
 })
+info.onScore(50, function () {
+    game.gameOver(true)
+})
 let guldType: Sprite = null
 let jernType: Sprite = null
 let diamantType: Sprite = null
-scene.setBackgroundColor(2)
+let mySprite: Sprite = null
+scene.setBackgroundColor(9)
 tiles.setCurrentTilemap(tilemap`level1`)
-let mySprite = sprites.create(img`
-    . . . . . 
-    . 2 . 2 . 
-    . . . . . 
-    2 . . . 2 
-    . 2 2 2 . 
+mySprite = sprites.create(img`
+    . . . . . . . e e e e . . . . . 
+    . . . . . . e e e e e e . 2 . . 
+    . . . . . 2 2 2 2 2 2 2 2 . . . 
+    . . . . e e d d d d d d e 2 . . 
+    . . . . e e d 6 d d 6 d e e . . 
+    . . . . . d d d d d d d d . . . 
+    . . . . . d d f d d f d d . . . 
+    . . . . . . d d f f d d . . . . 
+    . . . . . . . d d d d . . . . . 
+    . . . 8 8 8 8 b 8 8 b 8 8 8 8 . 
+    . . . 8 8 8 8 b 8 8 b 8 8 8 8 . 
+    . . . d d . 8 b 8 8 b 8 . d d e 
+    . . . d d . 8 b 8 8 b 8 . d e e 
+    . . . . . . 8 b 8 8 b 8 . e e . 
+    . . . . . . b b b b b b . . . . 
+    . . . . . . 6 6 . . 6 6 . . . . 
     `, SpriteKind.Player)
-controller.moveSprite(mySprite, 100, 100)
-tiles.placeOnRandomTile(mySprite, sprites.swamp.swampTile1)
+controller.moveSprite(mySprite, 100, 0)
+tiles.placeOnTile(mySprite, tiles.getTileLocation(0, 4))
 scene.cameraFollowSprite(mySprite)
+mySprite.ay = 300
 info.setScore(0)
-info.startCountdown(120)
+info.startCountdown(60)
 for (let index = 0; index < 20; index++) {
     diamantType = sprites.create(img`
-        . . . . . . . . . . . 6 6 6 6 6 
-        . . . . . . . . . 6 6 7 7 7 7 8 
-        . . . . . . 8 8 8 7 7 8 8 6 8 8 
-        . . e e e e c 6 6 8 8 . 8 7 8 . 
-        . e 2 5 4 2 e c 8 . . . 6 7 8 . 
-        e 2 4 2 2 2 2 2 c . . . 6 7 8 . 
-        e 2 2 2 2 2 2 2 c . . . 8 6 8 . 
-        e 2 e e 2 2 2 2 e e e e c 6 8 . 
-        c 2 e e 2 2 2 2 e 2 5 4 2 c 8 . 
-        . c 2 e e e 2 e 2 4 2 2 2 2 c . 
-        . . c 2 2 2 e e 2 2 2 2 2 2 2 e 
-        . . . e c c e c 2 2 2 2 2 2 2 e 
-        . . . . . . . c 2 e e 2 2 e 2 c 
-        . . . . . . . c e e e e e e 2 c 
-        . . . . . . . . c e 2 2 2 2 c . 
-        . . . . . . . . . c c c c c . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . 9 9 9 9 9 9 9 9 . . . . 
+        . . . 9 9 9 6 1 1 9 9 9 9 . . . 
+        . . 9 9 6 6 6 9 9 9 9 9 9 9 . . 
+        . 9 9 6 1 1 1 9 9 9 9 9 9 9 9 9 
+        9 9 6 6 1 9 9 9 9 9 9 1 9 6 1 9 
+        9 9 9 1 1 9 9 9 9 9 9 1 1 6 1 9 
+        9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
+        9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 . 
+        . . 9 9 9 1 9 9 9 9 9 9 9 9 9 . 
+        . . . 9 9 9 1 1 1 9 6 6 9 9 . . 
+        . . . . 9 9 6 6 1 6 6 9 9 . . . 
+        . . . . . 9 9 9 6 9 9 . . . . . 
+        . . . . . . . 9 9 9 . . . . . . 
         `, SpriteKind.Diamant)
     tiles.placeOnRandomTile(diamantType, assets.tile`myTile`)
     jernType = sprites.create(img`
-        . . . . . . 2 2 2 2 . . . . . . 
-        . . . . 2 2 3 3 3 3 2 e . . . . 
-        . . . 2 3 d 1 1 d d 3 2 e . . . 
-        . . 2 3 1 d 3 3 3 d d 3 e . . . 
-        . 2 3 1 3 3 3 3 3 d 1 3 b e . . 
-        . 2 1 d 3 3 3 3 d 3 3 1 3 b b . 
-        2 3 1 d 3 3 1 1 3 3 3 1 3 4 b b 
-        2 d 3 3 d 1 3 1 3 3 3 1 3 4 4 b 
-        2 d 3 3 3 1 3 1 3 3 3 1 b 4 4 e 
-        2 d 3 3 3 1 1 3 3 3 3 1 b 4 4 e 
-        e d 3 3 3 3 d 3 3 3 d d b 4 4 e 
-        e d d 3 3 3 d 3 3 3 1 3 b 4 b e 
-        e 3 d 3 3 1 d d 3 d 1 b b e e . 
-        . e 3 1 1 d d 1 1 1 b b e e e . 
-        . . e 3 3 3 3 3 3 b e e e e . . 
-        . . . e e e e e e e e e e . . . 
+        ........................
+        .........bbbb...........
+        ........bbbbbbbbb.......
+        ....bbbf666bbbb9bb......
+        ..bffffb6bbbbbbb999.....
+        ..bfbb666bbbbbbbfff9....
+        ..bbbbbbbbbbbbbbbbff....
+        ...bbbbbbbbbbbbbbbbffbb.
+        ...bbbbffffbbbbbbbb66bb.
+        .....bb99bfffbbbbbb666b.
+        ......bbb999ffbbbffffb..
+        .........bbb9bbbb99bf...
+        .............bb999b.....
+        ........................
+        ........................
+        ........................
         `, SpriteKind.Jern)
     tiles.placeOnRandomTile(jernType, assets.tile`myTile`)
     guldType = sprites.create(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
-        . . . . . . . b d b . . . . . . 
-        . . . . . . . b d b c . . . . . 
-        . . . . b b c 5 5 5 c b b . . . 
-        . . . . b 5 5 5 1 5 5 5 b . . . 
-        . . . c c 5 5 5 1 5 5 5 c c . . 
-        . . b b 5 5 5 1 1 1 5 5 5 b b . 
-        . . d d 5 1 1 1 1 1 1 1 5 d d . 
-        . . b b 5 5 5 1 1 1 5 5 5 b b . 
-        . . . c c 5 5 5 1 5 5 5 c c . . 
-        . . . . b 5 5 5 1 5 5 5 b . . . 
-        . . . . b b c 5 5 5 c b b . . . 
-        . . . . . . c b d b c . . . . . 
-        . . . . . . . b d b . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . 5 5 . . . . . . . . . 
+        . . . 5 5 5 5 5 5 5 . . . . . . 
+        . 5 5 5 5 f 4 4 4 5 5 . . . . . 
+        . 5 5 5 5 5 f 5 1 4 5 5 . . . . 
+        . . 5 5 5 5 5 5 5 f 4 5 . . . . 
+        . . 5 5 5 5 4 4 5 5 4 4 5 . . . 
+        . . . 5 4 4 5 f 4 5 5 5 5 . . . 
+        . . . . . 5 1 1 4 4 1 1 5 . . . 
+        . . . . . . 5 5 1 1 f 5 5 . . . 
+        . . . . . . . . 5 5 5 5 . . . . 
+        . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.guld)
     tiles.placeOnRandomTile(guldType, assets.tile`myTile`)

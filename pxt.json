@@ -11,13 +11,15 @@
         "README.md",
         "assets.json",
         "tilemap.g.jres",
-        "tilemap.g.ts"
+        "tilemap.g.ts",
+        "images.g.jres",
+        "images.g.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "2.0.59",
+        "target": "2.0.61",
         "targetId": "arcade"
     },
     "supportedTargets": [
